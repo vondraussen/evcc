@@ -9,11 +9,11 @@ endif
 VERSION := $(if $(TAG_NAME),$(TAG_NAME),$(SHA))
 BUILD_DATE := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 BUILD_TAGS := -tags=release
-LD_FLAGS := -X github.com/evcc-io/evcc/util.Version=$(VERSION) -X github.com/evcc-io/evcc/util.Commit=$(COMMIT) -s -w
+LD_FLAGS := -X github.com/vondraussen/evcc/util.Version=$(VERSION) -X github.com/vondraussen/evcc/util.Commit=$(COMMIT) -s -w
 BUILD_ARGS := -trimpath -ldflags='$(LD_FLAGS)'
 
 # docker
-DOCKER_IMAGE ?= evcc/evcc
+DOCKER_IMAGE ?= vondraussen/evcc
 DOCKER_TAG ?= testing
 PLATFORM ?= linux/amd64,linux/arm64,linux/arm/v6
 
