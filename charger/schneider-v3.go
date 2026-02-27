@@ -81,10 +81,6 @@ func NewSchneiderV3(ctx context.Context, uri string, id uint8) (api.Charger, err
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("schneider")
 	conn.Logger(log.TRACE)
 

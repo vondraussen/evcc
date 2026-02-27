@@ -78,10 +78,6 @@ func NewAblEm4(ctx context.Context, uri string, id uint8, connector uint16) (*Ab
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("abl-em4")
 	conn.Logger(log.TRACE)
 

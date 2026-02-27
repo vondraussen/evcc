@@ -79,10 +79,6 @@ func NewVersicharge(ctx context.Context, uri string, id uint8) (*Versicharge, er
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("versicharge")
 	conn.Logger(log.TRACE)
 

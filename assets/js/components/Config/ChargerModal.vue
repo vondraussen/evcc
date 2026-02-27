@@ -3,7 +3,6 @@
 		:id="id"
 		name="charger"
 		device-type="charger"
-		:is-sponsor="isSponsor"
 		:modal-title="modalTitle"
 		:provide-template-options="provideTemplateOptions"
 		:initial-values="initialValues"
@@ -126,7 +125,6 @@ export default defineComponent({
 			type: Object as PropType<Ocpp>,
 			default: () => ({ config: { port: 0 }, status: { stations: [] } }),
 		},
-		isSponsor: Boolean,
 	},
 	emits: ["changed", "close"],
 	data() {

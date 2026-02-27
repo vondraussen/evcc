@@ -3,7 +3,6 @@
 		<TestResult
 			v-if="testState"
 			v-bind="testState"
-			:sponsor-token-required="sponsorTokenRequired"
 			@test="$emit('test')"
 		/>
 
@@ -29,7 +28,7 @@
 			<button
 				type="submit"
 				:class="buttonClass"
-				:disabled="testState.isRunning || isSaving || isSucceeded || sponsorTokenRequired"
+				:disabled="testState.isRunning || isSaving || isSucceeded"
 				tabindex="0"
 				@click.prevent="handleSave"
 			>
@@ -66,7 +65,6 @@ export default defineComponent({
 		isSaving: Boolean as PropType<boolean>,
 		isSucceeded: Boolean as PropType<boolean>,
 		isNew: Boolean as PropType<boolean>,
-		sponsorTokenRequired: Boolean as PropType<boolean>,
 	},
 	emits: ["save", "remove", "test"],
 	computed: {

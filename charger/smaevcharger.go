@@ -91,10 +91,6 @@ func NewSmaevcharger(uri, user, password string, cache time.Duration) (api.Charg
 		cache:  cache,
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	// setup cached values
 	wb.measurementG = util.ResettableCached(wb._measurementData, wb.cache)
 	wb.parameterG = util.ResettableCached(wb._parameterData, wb.cache)

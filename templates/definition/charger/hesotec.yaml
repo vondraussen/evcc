@@ -6,8 +6,6 @@ products:
   - brand: Hesotec
     description:
       generic: eBox
-requirements:
-  evcc: ["sponsorship"]
 params:
   - name: modbus
     choice: ["tcpip"]

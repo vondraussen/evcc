@@ -766,9 +766,7 @@ func (site *Site) updateMeters() error {
 		return err
 	}
 
-	if sponsor.IsAuthorized() {
-		go site.optimizerUpdateAsync()
-	}
+	go site.optimizerUpdateAsync()
 
 	return nil
 }

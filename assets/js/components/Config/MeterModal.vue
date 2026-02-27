@@ -4,7 +4,6 @@
 		v-model:external-template="selectedTemplate"
 		name="meter"
 		device-type="meter"
-		:is-sponsor="isSponsor"
 		:modal-title="modalTitle"
 		:provide-template-options="provideTemplateOptions"
 		:initial-values="initialValues"
@@ -131,9 +130,6 @@ export default defineComponent({
 		PropertyField,
 		NewDeviceButton,
 		DeviceModalBase,
-	},
-	props: {
-		isSponsor: Boolean,
 	},
 	emits: ["changed", "close"],
 	data() {

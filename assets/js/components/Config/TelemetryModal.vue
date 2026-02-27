@@ -7,7 +7,7 @@
 		data-testid="telemetry-modal"
 	>
 		<p>{{ $t("config.telemetry.description") }}</p>
-		<TelemetrySettings :sponsorActive="sponsorActive" :telemetry="telemetry" />
+		<TelemetrySettings :telemetry="telemetry" />
 	</GenericModal>
 </template>
 
@@ -21,13 +21,7 @@ export default defineComponent({
 	name: "TelemetryModal",
 	components: { GenericModal, TelemetrySettings },
 	props: {
-		sponsor: { type: Object as PropType<Sponsor> },
 		telemetry: { type: Boolean },
-	},
-	computed: {
-		sponsorActive(): boolean {
-			return !!this.sponsor?.status?.name;
-		},
 	},
 });
 </script>

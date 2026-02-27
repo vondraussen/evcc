@@ -481,15 +481,8 @@ func configureVehicles(static []config.Named, names ...string) error {
 	return nil
 }
 
-func configureSponsorship(token string) (err error) {
-	if settings.Exists(keys.SponsorToken) {
-		if token, err = settings.String(keys.SponsorToken); err != nil {
-			return err
-		}
-	} else if token != "" {
-		yamlSource.sponsor = globalconfig.YamlSourceFile
-	}
-
+func configureSponsorship(token string) error {
+	// Sponsorship is no longer required - configuration is simplified
 	return sponsor.ConfigureSponsorship(token)
 }
 

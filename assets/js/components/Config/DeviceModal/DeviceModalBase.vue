@@ -45,7 +45,6 @@
 
 				<div v-else>
 					<p v-if="loadingTemplate">{{ $t("config.general.templateLoading") }}</p>
-					<SponsorTokenRequired v-if="sponsorTokenRequired" />
 					<slot name="template-description">
 						<Markdown v-if="description" :markdown="description" class="my-4" />
 					</slot>
@@ -157,7 +156,6 @@
 					:is-saving="saving"
 					:is-succeeded="succeeded"
 					:is-new="isNew"
-					:sponsor-token-required="sponsorTokenRequired"
 					@save="handleSave"
 					@remove="handleRemove"
 					@test="testManually"
@@ -178,7 +176,6 @@ import PropertyCollapsible from "../PropertyCollapsible.vue";
 import Modbus from "./Modbus.vue";
 import DeviceModalActions from "./Actions.vue";
 import Markdown from "../Markdown.vue";
-import SponsorTokenRequired from "./SponsorTokenRequired.vue";
 import TemplateSelector, { type TemplateGroup } from "./TemplateSelector.vue";
 import YamlEntry from "./YamlEntry.vue";
 import AuthCodeDisplay from "../AuthCodeDisplay.vue";
@@ -216,7 +213,6 @@ export default defineComponent({
 		Modbus,
 		DeviceModalActions,
 		Markdown,
-		SponsorTokenRequired,
 		TemplateSelector,
 		YamlEntry,
 		AuthCodeDisplay,
@@ -226,7 +222,6 @@ export default defineComponent({
 		deviceType: { type: String as PropType<DeviceType>, required: true },
 		id: Number as PropType<number | undefined>,
 		name: String,
-		isSponsor: Boolean,
 		// Computed/derived props that must be provided by parent
 		modalTitle: { type: String, required: true },
 		initialValues: { type: Object as PropType<DeviceValues>, required: true },
@@ -355,10 +350,6 @@ export default defineComponent({
 				return this.getProductName(this.values, this.templateName);
 			}
 			return this.values.deviceProduct || this.templateName || "";
-		},
-		sponsorTokenRequired() {
-			const requirements = this.template?.Requirements as any;
-			return requirements?.EVCC?.includes("sponsorship") && !this.isSponsor;
 		},
 		apiData(): ApiData {
 			let data: ApiData = {

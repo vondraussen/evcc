@@ -26,7 +26,7 @@ const notificationsData: Notification[] = [
     lp: 1,
   },
   {
-    message: "Sponsortoken: x509: certificate has expired",
+    message: "Telemetry: connection failed",
     level: "error",
     count: 1,
     time: timeAgo(1, 12, 44),

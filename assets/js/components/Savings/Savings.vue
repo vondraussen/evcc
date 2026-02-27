@@ -191,7 +191,7 @@
 							<div v-else class="my-4">
 								<LiveCommunity />
 								<TelemetrySettings
-									:sponsorActive="sponsorActive"
+
 									:telemetry="telemetry"
 								/>
 							</div>
@@ -241,9 +241,6 @@ export default defineComponent({
 		};
 	},
 	computed: {
-		sponsorActive(): boolean {
-			return !!this.sponsor?.status?.name;
-		},
 		tariffLink() {
 			return `${docsPrefix()}/docs/reference/configuration/tariffs`;
 		},

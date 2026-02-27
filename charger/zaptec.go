@@ -85,10 +85,6 @@ func NewZaptecFromConfig(ctx context.Context, other map[string]any) (api.Charger
 func NewZaptec(ctx context.Context, user, password, id string, priority bool, passive bool, cache time.Duration) (api.Charger, error) {
 	log := util.NewLogger("zaptec").Redact(user, password)
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	c := &Zaptec{
 		Helper:   request.NewHelper(log),
 		log:      log,

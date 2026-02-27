@@ -64,10 +64,6 @@ func NewPCElectric(uri string, slaveIndex int, meter string) (*PCElectric, error
 	log := util.NewLogger("pce")
 	uri = strings.TrimSuffix(strings.TrimRight(uri, "/"), "/servlet") + "/servlet/rest/chargebox"
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	wb := &PCElectric{
 		Helper:     request.NewHelper(log),
 		log:        log,

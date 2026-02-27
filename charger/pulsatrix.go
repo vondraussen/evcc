@@ -110,11 +110,6 @@ func NewPulsatrixFromConfig(other map[string]any) (api.Charger, error) {
 
 // NewPulsatrix creates pulsatrix charger
 func NewPulsatrix(hostname string) (*Pulsatrix, error) {
-	// check sponsor authorization early (fail fast)
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	wb := &Pulsatrix{
 		log:      util.NewLogger("pulsatrix"),
 		hostname: hostname,

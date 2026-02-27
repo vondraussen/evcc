@@ -92,10 +92,6 @@ func NewNRGKickGen2(ctx context.Context, uri string, slaveID uint8) (*NRGKickGen
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("nrggen2")
 	conn.Logger(log.TRACE)
 

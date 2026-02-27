@@ -331,9 +331,9 @@
 					@changed="loadpointChanged"
 					@dismissed="loadpointDismissed"
 				/>
-				<VehicleModal :is-sponsor="isSponsor" @vehicle-changed="vehicleChanged" />
-				<MeterModal :is-sponsor="isSponsor" @changed="meterChanged" />
-				<ChargerModal :is-sponsor="isSponsor" :ocpp="ocpp" @changed="chargerChanged" />
+			<VehicleModal @vehicle-changed="vehicleChanged" />
+			<MeterModal @changed="meterChanged" />
+			<ChargerModal :ocpp="ocpp" @changed="chargerChanged" />
 				<InfluxModal @changed="loadDirty" />
 				<MqttModal @changed="loadDirty" />
 				<NetworkModal @changed="loadDirty" />
@@ -344,10 +344,10 @@
 				<MessagingModal :messengers="messengers" @changed="loadDirty" />
 				<MessengerModal @changed="messengerChanged" />
 				<TariffsModal @changed="loadDirty" />
-				<TelemetryModal :sponsor="sponsor" :telemetry="telemetry" />
+			<TelemetryModal :telemetry="telemetry" />
 				<ExperimentalModal :experimental="experimental" />
 				<TitleModal @changed="loadDirty" />
-				<ModbusProxyModal :is-sponsor="isSponsor" @changed="loadDirty" />
+			<ModbusProxyModal @changed="loadDirty" />
 				<CircuitsModal :gridMeter="gridMeter" :extMeters="extMeters" @changed="loadDirty" />
 				<EebusModal
 					:status="eebus?.status"
@@ -643,9 +643,6 @@ export default defineComponent({
 		},
 		sponsor() {
 			return store.state?.sponsor;
-		},
-		isSponsor(): boolean {
-			return !!this.sponsor?.status?.name;
 		},
 		ocpp() {
 			return store.state?.ocpp;

@@ -12,9 +12,7 @@ products:
   - brand: echarge
     description:
       generic: cPμ2
-requirements:
-  evcc: ["sponsorship"]
-  description:
+params:
     de: >-
       Wenn du ohne Benutzername und Passwort die Meldung '401 (Unauthorized)' bekommst,
       benutze die Benutzernamen und Passwort Kombination, die du vom Installateur deiner Wallbox bekommen hast,

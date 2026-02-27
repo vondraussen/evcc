@@ -100,10 +100,6 @@ func NewMennekesCompact(ctx context.Context, uri, device, comset string, baudrat
 		conn.Timeout(timeout)
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("mennekes")
 	conn.Logger(log.TRACE)
 

@@ -13,7 +13,6 @@
 	>
 		<template #default="{ values }: { values: ModbusProxy[] }">
 			<div class="mb-3">
-				<SponsorTokenRequired v-if="!isSponsor" feature />
 				<pre class="text-monospace my-5">{{ ASCII_DIAGRAM }}</pre>
 				<div v-for="(c, index) in values" :key="index" data-testid="modbusproxy-connection">
 					<div class="d-block">
@@ -156,16 +155,12 @@ import ASCII_DIAGRAM from "./modbus-diagram.txt?raw";
 import Modbus from "./DeviceModal/Modbus.vue";
 import PropertyField from "./PropertyField.vue";
 import FormRow from "./FormRow.vue";
-import SponsorTokenRequired from "./DeviceModal/SponsorTokenRequired.vue";
 import SelectGroup from "@/components/Helper/SelectGroup.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
 	name: "ModbusProxyModal",
-	components: { JsonModal, Modbus, FormRow, PropertyField, SponsorTokenRequired, SelectGroup },
-	props: {
-		isSponsor: Boolean,
-	},
+	components: { JsonModal, Modbus, FormRow, PropertyField, SelectGroup },
 	emits: ["changed"],
 	data() {
 		return {

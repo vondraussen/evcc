@@ -61,10 +61,6 @@ func NewShellyTopACFromConfig(other map[string]any) (api.Charger, error) {
 
 // NewShellyTopAC creates Shelly Top AC charger
 func NewShellyTopAC(uri, user, password string) (api.Charger, error) {
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	// normalize URI
 	for _, suffix := range []string{"/", "/rpc", "/shelly"} {
 		uri = strings.TrimSuffix(uri, suffix)

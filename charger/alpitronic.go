@@ -83,10 +83,6 @@ func NewAlpitronicHYC(ctx context.Context, uri string, id uint8, connector uint1
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("alpitronic")
 	conn.Logger(log.TRACE)
 

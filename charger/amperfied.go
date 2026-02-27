@@ -86,10 +86,6 @@ func NewAmperfied(ctx context.Context, uri string, slaveID uint8, phases bool) (
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("amperfied")
 	conn.Logger(log.TRACE)
 

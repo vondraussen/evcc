@@ -97,10 +97,6 @@ func NewSalia(ctx context.Context, uri, user, password string, cache time.Durati
 		return res, err
 	}, cache)
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	// set chargemode manual
 	res, err := wb.apiG.Get()
 	if err != nil {

@@ -3,7 +3,6 @@
 		:id="id"
 		name="vehicle"
 		device-type="vehicle"
-		:is-sponsor="isSponsor"
 		:modal-title="$t(`config.vehicle.${isNew ? 'titleAdd' : 'titleEdit'}`)"
 		:provide-template-options="provideTemplateOptions"
 		:initial-values="initialValues"
@@ -183,9 +182,6 @@ export default defineComponent({
 		PropertyField,
 		SelectGroup,
 		DeviceModalBase,
-	},
-	props: {
-		isSponsor: Boolean,
 	},
 	emits: ["vehicle-changed"],
 	data() {

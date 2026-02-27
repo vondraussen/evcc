@@ -68,10 +68,6 @@ func NewAlphatec(ctx context.Context, uri, device, comset string, baudrate int, 
 
 	conn.Delay(20 * time.Millisecond)
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("alphatec")
 	conn.Logger(log.TRACE)
 

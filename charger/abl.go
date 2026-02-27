@@ -109,10 +109,6 @@ func NewABLeMH(ctx context.Context, uri, device, comset string, baudrate int, sl
 		conn.Timeout(timeout)
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("abl")
 	conn.Logger(log.TRACE)
 

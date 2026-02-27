@@ -115,10 +115,6 @@ func NewE3dc(ctx context.Context, cfg rscp.ClientConfig, id uint8) (*E3dc, error
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	wb := &E3dc{
 		log:  log,
 		conn: conn,

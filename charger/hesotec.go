@@ -79,10 +79,6 @@ func NewHesotec(ctx context.Context, uri string, id uint8) (api.Charger, error) 
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("hesotec")
 	conn.Logger(log.TRACE)
 

@@ -97,10 +97,6 @@ func NewHardyBarth(uri string, chargecontrol, meter int, cache time.Duration) (a
 		return res.Meter.Meter, err
 	}, cache)
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	uri = fmt.Sprintf("%s/chargecontrols/%d/mode", wb.uri, wb.chargecontrol)
 	data := url.Values{"mode": {echarge.ModeManual}}
 	if err := wb.post(uri, data); err != nil {

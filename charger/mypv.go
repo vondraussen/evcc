@@ -102,10 +102,6 @@ func NewMyPv(ctx context.Context, name, uri string, slaveID uint8, tempSource in
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	if tempSource < 1 || tempSource > len(elwaTemp) {
 		return nil, fmt.Errorf("invalid temp source: %d", tempSource)
 	}

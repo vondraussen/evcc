@@ -60,10 +60,6 @@ func NewSEMPFromConfig(ctx context.Context, other map[string]any) (api.Charger, 
 		Cache: 5 * time.Second,
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	if err := util.DecodeOther(other, &cc); err != nil {
 		return nil, err
 	}

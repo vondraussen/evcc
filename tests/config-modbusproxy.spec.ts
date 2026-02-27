@@ -33,8 +33,7 @@ test.describe("modbusproxy", async () => {
     const modal = await page.getByTestId("modbusproxy-modal");
     await expectModalVisible(modal);
 
-    await expect(modal).toContainText("This feature requires a sponsor token.");
-
+    // Sponsor token no longer required
     await modal.getByRole("button", { name: "Add proxy connection" }).click();
     await expect(modal).toContainText("Connection #1");
 

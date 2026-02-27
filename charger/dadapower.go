@@ -58,10 +58,6 @@ func NewDadapower(ctx context.Context, uri string, id uint8) (*Dadapower, error)
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("dadapower")
 	conn.Logger(log.TRACE)
 

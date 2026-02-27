@@ -119,10 +119,6 @@ func NewBenderCC(ctx context.Context, uri string, id uint8, cache time.Duration)
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("bender")
 	conn.Logger(log.TRACE)
 

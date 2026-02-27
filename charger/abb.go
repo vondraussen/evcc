@@ -76,10 +76,6 @@ func NewABB(ctx context.Context, uri, device, comset string, baudrate int, proto
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("abb")
 	conn.Logger(log.TRACE)
 

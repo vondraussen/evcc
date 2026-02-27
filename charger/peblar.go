@@ -92,10 +92,6 @@ func NewPeblar(ctx context.Context, uri string, id uint8) (api.Charger, error) {
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	// Register contains the physically connected phases
 	b, err := conn.ReadInputRegisters(peblarRegPhaseCount, 1)
 	if err != nil {

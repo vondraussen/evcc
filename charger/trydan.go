@@ -73,9 +73,6 @@ func NewTrydanFromConfig(other map[string]any) (api.Charger, error) {
 
 // NewTrydan creates Trydan charger
 func NewTrydan(uri string, cache time.Duration) (api.Charger, error) {
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
 
 	c := &Trydan{
 		Helper: request.NewHelper(util.NewLogger("trydan")),

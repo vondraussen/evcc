@@ -43,9 +43,6 @@ func publish() {
 
 func Enable(enable bool) error {
 	if enable {
-		if !sponsor.IsAuthorized() {
-			return errors.New("telemetry requires sponsorship")
-		}
 		if instanceID == "" {
 			return fmt.Errorf("instance id not set")
 		}

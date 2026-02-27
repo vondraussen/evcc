@@ -67,10 +67,6 @@ func NewSigenergy(ctx context.Context, uri string, slaveID uint8) (*Sigenergy, e
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("sigenergy")
 	conn.Logger(log.TRACE)
 

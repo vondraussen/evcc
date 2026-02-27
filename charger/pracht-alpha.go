@@ -81,10 +81,6 @@ func NewPrachtAlpha(ctx context.Context, uri, device, comset string, baudrate in
 		conn.Timeout(timeout)
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("pracht")
 	conn.Logger(log.TRACE)
 

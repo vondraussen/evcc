@@ -100,10 +100,6 @@ func NewEaseeFromConfig(ctx context.Context, other map[string]any) (api.Charger,
 func NewEasee(ctx context.Context, user, password, charger string, timeout time.Duration, authorize bool) (*Easee, error) {
 	log := util.NewLogger("easee").Redact(user, password)
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	done := make(chan struct{})
 
 	c := &Easee{

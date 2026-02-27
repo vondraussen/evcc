@@ -80,10 +80,6 @@ func NewHeidelbergEC(ctx context.Context, uri, device, comset string, baudrate i
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("heidel")
 	conn.Logger(log.TRACE)
 

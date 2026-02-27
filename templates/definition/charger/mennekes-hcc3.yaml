@@ -7,8 +7,6 @@ products:
   - brand: Mennekes
     description:
       generic: AMTRON Premium
-requirements:
-  evcc: ["sponsorship"]
 params:
   - name: modbus
     choice: ["tcpip"]

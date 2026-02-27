@@ -89,10 +89,6 @@ func NewEtrel(ctx context.Context, uri string, id uint8, connector int) (*Etrel,
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("etrel")
 	conn.Logger(log.TRACE)
 

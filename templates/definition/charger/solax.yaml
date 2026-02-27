@@ -10,9 +10,7 @@ products:
     description:
       generic: Q.HOME EDRIVE A
 capabilities: ["mA"]
-requirements:
-  evcc: ["sponsorship"]
-  description:
+params:
     de: Die Wallbox muss sich im Modus "Schnell" befinden und vom Wechselrichtersystem entkoppelt sein.
     en: The charger must be in “Fast” mode and decoupled from the inverter system.
 params:

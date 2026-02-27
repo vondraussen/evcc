@@ -102,10 +102,6 @@ func NewPlugchoice(uri, uuid, identity string, connector int, token string, cach
 		}
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	c := &Plugchoice{
 		Helper:    helper,
 		uri:       uri,

@@ -98,10 +98,6 @@ func NewOCPPFromConfig(ctx context.Context, other map[string]any) (api.Charger, 
 		return c, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	var (
 		powerG, totalEnergyG, socG func() (float64, error)
 		currentsG, voltagesG       func() (float64, float64, float64, error)

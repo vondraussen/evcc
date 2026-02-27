@@ -69,10 +69,6 @@ func NewTronityFromConfig(other map[string]any) (api.Vehicle, error) {
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	// authenticated http client with logging injected to the tronity client
 	log := util.NewLogger("tronity").Redact(cc.Credentials.ID, cc.Credentials.Secret)
 

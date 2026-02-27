@@ -83,10 +83,6 @@ func NewVoltie(ctx context.Context, uri string, slaveID uint8) (*Voltie, error) 
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("voltie")
 	conn.Logger(log.TRACE)
 

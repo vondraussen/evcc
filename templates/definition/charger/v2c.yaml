@@ -4,8 +4,6 @@ products:
   - brand: V2C
     description:
       generic: Trydan
-requirements:
-  evcc: ["sponsorship"]
 params:
   - name: host
 render: |

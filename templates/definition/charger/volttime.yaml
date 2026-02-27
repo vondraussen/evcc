@@ -12,8 +12,6 @@ products:
   - brand: Volt Time
     description:
       generic: One
-requirements:
-  evcc: ["sponsorship"]
 params:
   - name: token
     required: true

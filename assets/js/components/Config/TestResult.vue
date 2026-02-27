@@ -24,8 +24,6 @@
 				</a>
 			</div>
 		</div>
-		<hr v-if="showTokenRequired" class="divider" />
-		<SponsorTokenRequired v-if="showTokenRequired" compact />
 		<hr v-if="error" class="divider" />
 		<div v-if="error" class="text-danger" :class="{ 'opacity-25': isRunning }">
 			{{ error }}
@@ -40,11 +38,10 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import DeviceTags from "./DeviceTags.vue";
-import SponsorTokenRequired from "./DeviceModal/SponsorTokenRequired.vue";
 
 export default defineComponent({
 	name: "TestResult",
-	components: { DeviceTags, SponsorTokenRequired },
+	components: { DeviceTags },
 	props: {
 		isUnknown: Boolean,
 		isSuccess: Boolean,
@@ -52,31 +49,16 @@ export default defineComponent({
 		isRunning: Boolean,
 		result: Object as PropType<Record<string, any> | null>,
 		error: String as PropType<string | null>,
-		sponsorTokenRequired: Boolean,
 	},
 	emits: ["test"],
-	data() {
-		return {
-			showTokenRequired: false,
-		};
-	},
 	computed: {
 		hasResult() {
 			return this.result && Object.keys(this.result).length > 0;
 		},
 	},
-	watch: {
-		sponsorTokenRequired() {
-			this.showTokenRequired = false;
-		},
-	},
 	methods: {
 		test() {
-			if (this.sponsorTokenRequired) {
-				this.showTokenRequired = true;
-			} else {
-				this.$emit("test");
-			}
+			this.$emit("test");
 		},
 	},
 });

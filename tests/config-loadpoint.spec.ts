@@ -652,7 +652,7 @@ temp:
 });
 
 test.describe("sponsor token", () => {
-  test("create charger with missing sponsor token", async ({ page }) => {
+  test("create charger without sponsor token requirement", async ({ page }) => {
     await start();
     await page.goto("/#/config");
 
@@ -663,22 +663,12 @@ test.describe("sponsor token", () => {
     await expectModalVisible(chargerModal);
     await chargerModal.getByLabel("Manufacturer").selectOption({ label: "Peblar Business" });
 
-    // verify disabled save button
-    await expect(chargerModal.getByRole("button", { name: "Save" })).toBeDisabled();
+    // verify save button is enabled (no sponsor token required anymore)
+    await expect(chargerModal.getByRole("button", { name: "Save" })).toBeEnabled();
 
-    // verify sponsor notice
-    await expect(chargerModal).toContainText(
+    // verify no sponsor notice appears
+    await expect(chargerModal).not.toContainText(
       "You must configure a sponsor token before you can create this device."
     );
-    const testResult = chargerModal.getByTestId("test-result");
-    await testResult.getByRole("link", { name: "Validate" }).click();
-    const sponsorMessage = testResult.getByText("No sponsor token configured.");
-    await expect(sponsorMessage).toBeVisible();
-
-    // verify click on sponsor
-    await sponsorMessage.click();
-    const sponsorModal = page.getByTestId("sponsor-modal");
-    await expectModalVisible(sponsorModal);
-    await expect(sponsorModal.getByRole("heading")).toContainText("Sponsorship");
   });
 });

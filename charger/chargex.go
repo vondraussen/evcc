@@ -82,10 +82,6 @@ func NewChargeX(ctx context.Context, uri string, id uint8, connector uint16) (ap
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("chargex")
 	conn.Logger(log.TRACE)
 

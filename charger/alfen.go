@@ -78,10 +78,6 @@ func NewAlfen(ctx context.Context, uri string, slaveID uint8) (api.Charger, erro
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("alfen")
 	conn.Logger(log.TRACE)
 

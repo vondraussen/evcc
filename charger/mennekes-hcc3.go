@@ -74,10 +74,6 @@ func NewMennekesHcc3(ctx context.Context, uri string, slaveID uint8) (api.Charge
 		return nil, err
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	log := util.NewLogger("mennekes-hcc3")
 	conn.Logger(log.TRACE)
 

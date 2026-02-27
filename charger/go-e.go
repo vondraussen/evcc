@@ -96,10 +96,6 @@ func NewGoE(uri, token string, cache time.Duration) (*GoE, error) {
 		c.api = goe.NewLocal(log, util.DefaultScheme(uri, "http"), cache)
 	}
 
-	if !sponsor.IsAuthorized() {
-		return nil, api.ErrSponsorRequired
-	}
-
 	return c, nil
 }
 
