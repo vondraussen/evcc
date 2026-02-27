@@ -32,7 +32,7 @@ import (
 	"github.com/evcc-io/evcc/charger/echarge/salia"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/request"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/evcc-io/evcc/util/transport"
 	"github.com/hashicorp/go-version"
 )

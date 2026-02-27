@@ -25,7 +25,7 @@ import (
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/charger/semp"
 	"github.com/evcc-io/evcc/util"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 // SEMP charger implementation

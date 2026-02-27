@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"net/url"
-
 	"github.com/cenkalti/backoff/v4"
 )
 

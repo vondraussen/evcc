@@ -45,7 +45,7 @@ import (
 	"github.com/evcc-io/evcc/util/machine"
 	"github.com/evcc-io/evcc/util/request"
 	_ "github.com/evcc-io/evcc/util/service"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/evcc-io/evcc/util/templates"
 	"github.com/evcc-io/evcc/vehicle"
 	"github.com/gorilla/handlers"

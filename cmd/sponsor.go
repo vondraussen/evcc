@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/spf13/cobra"
 )
 

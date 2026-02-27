@@ -20,7 +20,7 @@ import (
 	"github.com/evcc-io/evcc/tariff"
 	"github.com/evcc-io/evcc/util/config"
 	"github.com/evcc-io/evcc/util/request"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/jinzhu/now"
 	"github.com/samber/lo"
 	"golang.org/x/exp/constraints"

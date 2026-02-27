@@ -9,7 +9,7 @@ import (
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/modbus"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 func StartProxy(port int, config modbus.Settings, readOnly ReadOnlyMode) error {

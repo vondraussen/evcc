@@ -29,7 +29,7 @@ import (
 	"github.com/evcc-io/evcc/charger/plugchoice"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/request"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/evcc-io/evcc/util/transport"
 	"github.com/lorenzodonini/ocpp-go/ocpp1.6/core"
 )

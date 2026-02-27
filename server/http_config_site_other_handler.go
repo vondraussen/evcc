@@ -7,7 +7,7 @@ import (
 	"github.com/evcc-io/evcc/api/globalconfig"
 	"github.com/evcc-io/evcc/core/keys"
 	"github.com/evcc-io/evcc/server/db/settings"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 func setExperimental(pub publisher) func(bool) error {

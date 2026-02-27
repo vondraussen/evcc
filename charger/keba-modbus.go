@@ -29,7 +29,7 @@ import (
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/modbus"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 // https://www.keba.com/en/emobility/service-support/downloads/Downloads

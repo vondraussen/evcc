@@ -25,7 +25,7 @@ import (
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/modbus"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 // https://blog.chargex.de/hubfs/Customer%20Support/ChargeX%20Modbus%20TCP%20documentation.pdf

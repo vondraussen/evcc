@@ -9,7 +9,7 @@ import (
 	"github.com/evcc-io/evcc/charger/pcelectric"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/request"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 )
 
 // PCElectric charger implementation

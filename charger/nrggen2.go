@@ -9,7 +9,7 @@ import (
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/modbus"
-	"github.com/evcc-io/evcc/util/sponsor"
+	
 	"github.com/spf13/cast"
 	"github.com/volkszaehler/mbmd/encoding"
 )
