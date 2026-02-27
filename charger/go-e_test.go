@@ -35,8 +35,6 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func TestGoEV1(t *testing.T) {
 	srv := httptest.NewServer(new(handler))
 
-	sponsor.Subject = "foo"
-
 	wb, err := newGoEFromConfig(false, map[string]any{"uri": srv.URL})
 	if err != nil {
 		t.Error(err)
@@ -58,8 +56,6 @@ func TestGoEV1(t *testing.T) {
 func TestGoEV2(t *testing.T) {
 	srv := httptest.NewServer(new(handler))
 	srv.Config.Handler.(*handler).expect("/api/status?filter=alw")
-
-	sponsor.Subject = "foo"
 
 	wb, err := newGoEFromConfig(false, map[string]any{"uri": srv.URL})
 	if err != nil {

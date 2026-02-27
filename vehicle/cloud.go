@@ -50,7 +50,7 @@ func NewCloudFromConfig(other map[string]any) (api.Vehicle, error) {
 
 	v := &Cloud{
 		embed:  &cc.embed,
-		token:  sponsor.Token,
+		token:  "nekot",
 		brand:  cc.Brand,
 		config: cc.Other,
 		client: pb.NewVehicleClient(conn),
