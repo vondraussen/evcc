@@ -7,9 +7,6 @@ products:
     description:
       generic: cPH1
 params:
-    de: Als Betriebsmodus muss `manual` ausgewählt sein
-    en: Charge mode must be configured as `manual`
-params:
   - name: host
   - name: connector
     default: 1

@@ -13,15 +13,6 @@ products:
     description:
       generic: cPμ2
 params:
-    de: >-
-      Wenn du ohne Benutzername und Passwort die Meldung '401 (Unauthorized)' bekommst,
-      benutze die Benutzernamen und Passwort Kombination, die du vom Installateur deiner Wallbox bekommen hast,
-      die auch für die Weboberfläche der Wallbox funktioniert.
-    en: >-
-      If you get the message '401 (Unauthorized)' without a username and password,
-      use the username and password that you received from the installer of your wallbox.
-      The combo that also works for the web interface of the wallbox.
-params:
   - name: host
   - name: user
     help:
