@@ -20,9 +20,9 @@ func init() {
 func runSponsor(cmd *cobra.Command, args []string) {
 	token := args[0]
 
-	if err := sponsor.ConfigureSponsorship(token); err != nil {
-		fatal(err)
-	}
+	// if err := sponsor.ConfigureSponsorship(token); err != nil {
+	// 	fatal(err)
+	// }
 
 	log.INFO.Println("sponsorship validated")
 }

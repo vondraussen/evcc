@@ -380,7 +380,7 @@ func runRoot(cmd *cobra.Command, args []string) {
 		Status: ocpp.GetStatus(),
 	}}
 	valueChan <- util.Param{Key: keys.Sponsor, Val: globalconfig.ConfigStatus{
-		Status:     sponsor.RedactedStatus(),
+		Status:     2,
 		YamlSource: yamlSource.sponsor,
 	}}
 

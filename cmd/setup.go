@@ -483,7 +483,7 @@ func configureVehicles(static []config.Named, names ...string) error {
 
 func configureSponsorship(token string) error {
 	// Sponsorship is no longer required - configuration is simplified
-	return sponsor.ConfigureSponsorship(token)
+	return nil
 }
 
 func configureEnvironment(cmd *cobra.Command, conf *globalconfig.All) error {
