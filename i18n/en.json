@@ -651,7 +651,7 @@
       "tokenRequired": "You must configure a sponsor token before you can create this device.",
       "tokenRequiredFeature": "This feature requires a sponsor token.",
       "tokenRequiredLearnMore": "Learn more.",
-      "tokenRequiredShort": "No sponsor token configured.",
+      "tokenRequiredShort": "No sponsor token configured??!!",
       "trialToken": "trial token",
       "viaYaml": "via evcc.yaml",
       "yourToken": "Your token"
