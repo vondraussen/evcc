@@ -51,8 +51,6 @@ func main() {
 			action = arg
 			key = ""
 		case "token":
-			sponsor.Subject = arg // TODO placeholder
-			sponsor.Token = arg
 			key = ""
 		default:
 			params[key] = arg
