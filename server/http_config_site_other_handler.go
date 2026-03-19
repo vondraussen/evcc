@@ -1,10 +1,6 @@
 package server
 
 import (
-	"encoding/json"
-	"net/http"
-
-	"github.com/evcc-io/evcc/api/globalconfig"
 	"github.com/evcc-io/evcc/core/keys"
 	"github.com/evcc-io/evcc/server/db/settings"
 	
