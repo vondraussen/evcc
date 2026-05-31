@@ -41,11 +41,13 @@ jobs:
 
       - name: Merge upstream/master
         if: ${{ steps.upstream.outputs.new_commits != '0' }}
-        run: git merge upstream/master --no-edit -m "chore: sync upstream $(date +%Y-%m-%d)"
+        run: |
+          git merge upstream/master --no-edit -m "sync upstream $(date +%Y-%m-%d)"
 
       - name: Push synced branch
         if: ${{ steps.upstream.outputs.new_commits != '0' }}
-        run: git push origin feature/cheap2
+        run: |
+          git push origin feature/cheap2
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
