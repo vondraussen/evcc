@@ -40,11 +40,11 @@ jobs:
           echo "Upstream has $count new commits"
 
       - name: Merge upstream/master
-        if: steps.upstream.outputs.new_commits != '0'
+        if: ${{ steps.upstream.outputs.new_commits != '0' }}
         run: git merge upstream/master --no-edit -m "chore: sync upstream $(date +%Y-%m-%d)"
 
       - name: Push synced branch
-        if: steps.upstream.outputs.new_commits != '0'
+        if: ${{ steps.upstream.outputs.new_commits != '0' }}
         run: git push origin feature/cheap2
 
       - name: Set up QEMU
