@@ -70,6 +70,7 @@
 import formatter, { POWER_UNIT } from "@/mixins/formatter";
 import TariffChart from "../Tariff/TariffChart.vue";
 import { generateRateSlots, calculateCostRange } from "@/utils/tariffSlots";
+import { distanceValue, distanceUnit } from "@/units";
 
 const HIDDEN_TAGS = ["icon", "heating", "integratedDevice"];
 
@@ -106,6 +107,7 @@ export default {
 		phaseEntries() {
 			return Object.entries(this.tags)
 				.filter(([name]) => PHASE_TAGS.includes(name))
+				.sort(([a], [b]) => a.localeCompare(b))
 				.map(([name, { value, error, warning, muted }]) => {
 					return { name, value, error, warning, muted };
 				});
@@ -174,11 +176,16 @@ export default {
 	},
 	methods: {
 		valueClasses(entry) {
-			return {
-				"value--error": !!entry.error,
-				"value--warning": entry.warning,
-				"value--muted": entry.muted || entry.value === false,
-			};
+			if (entry.error) {
+				return "value--error";
+			}
+			if (entry.warning) {
+				return "value--warning";
+			}
+			if (entry.muted || entry.value === null || entry.value === undefined) {
+				return "value--muted";
+			}
+			return "";
 		},
 		fmtDeviceValue(entry) {
 			const { name, value } = entry;
@@ -202,7 +209,7 @@ export default {
 					return this.fmtTemperature(value);
 				case "odometer":
 				case "range":
-					return `${this.fmtNumber(value, 0)} km`;
+					return `${this.fmtNumber(distanceValue(value), 0)} ${distanceUnit()}`;
 				case "chargeStatus":
 					return value ? this.$t(`config.deviceValue.chargeStatus${value}`) : "-";
 				case "price":
@@ -220,7 +227,9 @@ export default {
 				case "singlePhase":
 				case "enabled":
 				case "configured":
+				case "connected":
 				case "dimmed":
+				case "loginBlocked":
 					return value
 						? this.$t("config.deviceValue.yes")
 						: this.$t("config.deviceValue.no");
