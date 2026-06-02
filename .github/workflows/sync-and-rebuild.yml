@@ -32,6 +32,20 @@ jobs:
           git remote add upstream https://github.com/evcc-io/evcc.git
           git fetch upstream master
 
+      - name: Save local customisations as patch
+        run: |
+          # Capture our deliberate changes vs upstream before merging.
+          # After -X theirs resolves conflicts, this patch is re-applied so our
+          # customisations (cheaper runners, no integration job) survive the sync.
+          # Add more files to the list here if needed.
+          git diff upstream/master HEAD -- .github/workflows/default.yml > /tmp/local-patch.diff
+          if [ -s /tmp/local-patch.diff ]; then
+            echo "Saved local customisations ($(wc -l < /tmp/local-patch.diff) lines)"
+            git diff --stat upstream/master HEAD -- .github/workflows/default.yml
+          else
+            echo "No local customisations vs upstream"
+          fi
+
       - name: Count new upstream commits
         id: upstream
         run: |
@@ -42,7 +56,35 @@ jobs:
       - name: Merge upstream/master
         if: ${{ steps.upstream.outputs.new_commits != '0' }}
         run: |
-          git merge upstream/master --no-edit -m "sync upstream $(date +%Y-%m-%d)"
+          # -X theirs: on any conflict take upstream's version automatically.
+          # Local customisations are re-applied in the next step.
+          git merge upstream/master --no-edit -X theirs -m "sync upstream $(date +%Y-%m-%d)"
+
+      - name: Re-apply local customisations
+        if: ${{ steps.upstream.outputs.new_commits != '0' }}
+        run: |
+          if [ ! -s /tmp/local-patch.diff ]; then
+            echo "No local customisations to re-apply"
+            exit 0
+          fi
+          # If the patch is already in place (no conflict occurred), skip.
+          if git apply --check --reverse /tmp/local-patch.diff 2>/dev/null; then
+            echo "Customisations already in place, nothing to re-apply"
+            exit 0
+          fi
+          # Upstream overwrote our changes; re-apply with 3-way merge support.
+          if git apply --3way /tmp/local-patch.diff; then
+            git diff --staged --quiet || git commit -m "re-apply local customisations"
+            echo "Local customisations re-applied successfully"
+          else
+            echo "::error::Patch failed to apply after upstream merge."
+            echo "Upstream changed an area we customise. Review the diff below and"
+            echo "update the customisation or resolve the conflict manually."
+            echo ""
+            echo "=== Our customisations (local vs upstream/master) ==="
+            cat /tmp/local-patch.diff
+            exit 1
+          fi
 
       - name: Push synced branch
         if: ${{ steps.upstream.outputs.new_commits != '0' }}
