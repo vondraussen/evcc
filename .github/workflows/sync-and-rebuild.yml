@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   packages: write
-  workflows: write
 
 jobs:
   sync-and-rebuild:
@@ -21,7 +20,10 @@ jobs:
         with:
           ref: feature/cheap2
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # PAT with repo+workflow scopes is required to push upstream workflow
+          # file changes. Create one at github.com/settings/tokens and add it
+          # as a repo secret named SYNC_PAT.
+          token: ${{ secrets.SYNC_PAT }}
 
       - name: Configure git
         run: |
