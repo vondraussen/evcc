@@ -82,7 +82,7 @@ func (v *Provider) Soc() (float64, error) {
 		return 0, err
 	}
 
-	if p := lookup(data, FieldSoc, FieldHvSoc); p != nil {
+	if p := lookup(data, FieldBatteryStateReportSoc, FieldSoc, FieldHvSoc); p != nil {
 		return strconv.ParseFloat(p.Value, 64)
 	}
 
@@ -98,7 +98,7 @@ func (v *Provider) Range() (int64, error) {
 		return 0, err
 	}
 
-	if p := lookup(data, FieldRange, FieldRangePrimary); p != nil {
+	if p := lookup(data, FieldRangeSecondary, FieldRangePrimary, FieldRangeCombined); p != nil {
 		f, err := strconv.ParseFloat(p.Value, 64)
 		return int64(f), err
 	}
