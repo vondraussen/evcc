@@ -82,9 +82,9 @@ type dataset struct {
 
 // dataPoint is a single data point as delivered in the dataset JSON document
 type dataPoint struct {
-	DataFieldName string `json:"dataFieldName"`
-	Value         string `json:"value"`
-	TimestampUtc  string `json:"timestampUtc"`
+	DataFieldName string     `json:"dataFieldName"`
+	Value         string     `json:"value"`
+	TimestampUtc  *time.Time `json:"timestampUtc"`
 }
 
 // point is a decoded data point: its value and the time it was recorded
@@ -104,11 +104,14 @@ const (
 	FieldBatteryStateReportSoc = "battery_state_report.soc"
 	FieldSoc                   = "state_of_charge"
 	FieldHvSoc                 = "hv_soc"
+	FieldHvBatteryLevel        = "battery_level_HV.value"
 	FieldRangeCombined         = "cruising_range_combined"
 	FieldRangePrimary          = "cruising_range_primary_engine"
 	FieldRangeSecondary        = "cruising_range_secondary_engine"
 	FieldOdometer              = "mileage"
+	FieldOdometerValue         = "mileage.value"
 	FieldChargingState         = "charging_state"
+	FieldCurrentChargeState    = "charging_state_report.current_charge_state"
 	FieldPlugState             = "plug_state"
 	FieldTargetSoc             = "settings.target_soc"
 	FieldRemainingTime         = "remaining_charging_time"
@@ -141,10 +144,10 @@ func contentDatasets(list []dataset) ([]dataset, error) {
 // data field name. On duplicate field names the entry with the newest timestamp
 // wins. The VIN is returned so the caller can drop datasets that do not belong
 // to the requested vehicle.
-func parseDataset(b []byte) (string, map[string]point, error) {
+func parseDataset(b []byte) (map[string]point, error) {
 	zr, err := zip.NewReader(bytes.NewReader(b), int64(len(b)))
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 
 	var file *zip.File
@@ -155,34 +158,34 @@ func parseDataset(b []byte) (string, map[string]point, error) {
 		}
 	}
 	if file == nil {
-		return "", nil, errors.New("no json document in dataset")
+		return nil, errors.New("no json document in dataset")
 	}
 
 	rc, err := file.Open()
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 	defer rc.Close()
 
 	raw, err := io.ReadAll(rc)
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 
 	var ds datasetFile
 	if err := json.Unmarshal(raw, &ds); err != nil {
-		return "", nil, err
+		return nil, err
 	}
 
 	res := make(map[string]point, len(ds.Data))
 	for _, p := range ds.Data {
-		if p.DataFieldName == "" {
+		if p.DataFieldName == "" || p.Value == "" {
 			continue
 		}
 
-		ts, err := time.Parse(time.RFC3339, p.TimestampUtc)
-		if err != nil {
-			return "", nil, err
+		var ts time.Time
+		if p.TimestampUtc != nil {
+			ts = *p.TimestampUtc
 		}
 
 		if cur, ok := res[p.DataFieldName]; ok && cur.Timestamp.After(ts) {
@@ -192,5 +195,5 @@ func parseDataset(b []byte) (string, map[string]point, error) {
 		res[p.DataFieldName] = point{Value: p.Value, Timestamp: ts}
 	}
 
-	return ds.VIN, res, nil
+	return res, nil
 }
