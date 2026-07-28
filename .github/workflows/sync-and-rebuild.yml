@@ -118,7 +118,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/vondraussen/evc:nightly
-            ghcr.io/vondraussen/evc:nightly.${{ steps.date.outputs.date }}
-          cache-from: type=registry,ref=ghcr.io/vondraussen/evc:nightly
+            ghcr.io/vondraussen/evcc:nightly
+            ghcr.io/vondraussen/evcc:nightly.${{ steps.date.outputs.date }}
+          cache-from: type=registry,ref=ghcr.io/vondraussen/evcc:nightly
           cache-to: type=inline
