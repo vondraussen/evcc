@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout feature/cheap2
+      - name: Checkout feature/cheap
         uses: actions/checkout@v4
         with:
-          ref: feature/cheap2
+          ref: feature/cheap
           fetch-depth: 0
           # PAT with repo+workflow scopes is required to push upstream workflow
           # file changes. Create one at github.com/settings/tokens and add it
@@ -92,7 +92,7 @@ jobs:
       - name: Push synced branch
         if: ${{ steps.upstream.outputs.new_commits != '0' }}
         run: |
-          git push origin feature/cheap2
+          git push origin feature/cheap
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
