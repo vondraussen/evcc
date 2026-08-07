@@ -46,12 +46,29 @@ jobs:
       contents: read
       actions: write
 
+  check-docker-secrets:
+    name: Check Docker Hub secrets
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      has_secrets: ${{ steps.check.outputs.has_secrets }}
+    steps:
+      # ponytail: job-level `if:` can't read `secrets` directly, so resolve it
+      # here into an output first (e.g. GHCR-only forks without Docker Hub creds).
+      - id: check
+        run: |
+          if [ -n "${{ secrets.DOCKER_USER }}" ] && [ -n "${{ secrets.DOCKER_PASS }}" ]; then
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+          fi
+
   docker:
     name: Publish Docker :nightly
     needs:
       - call-build-workflow
-    # ponytail: skip on forks without Docker Hub secrets configured (e.g. GHCR-only forks)
-    if: ${{ secrets.DOCKER_USER != '' && secrets.DOCKER_PASS != '' }}
+      - check-docker-secrets
+    if: needs.check-docker-secrets.outputs.has_secrets == 'true'
     runs-on: ubuntu-24.04
 
     permissions:
