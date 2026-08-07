@@ -45,6 +45,8 @@ jobs:
     name: Publish Docker :nightly
     needs:
       - call-build-workflow
+    # ponytail: skip on forks without Docker Hub secrets configured (e.g. GHCR-only forks)
+    if: ${{ secrets.DOCKER_USER != '' && secrets.DOCKER_PASS != '' }}
     runs-on: ubuntu-24.04
 
     permissions:
