@@ -178,13 +178,18 @@ jobs:
           ref: ${{ inputs.ref }}
           persist-credentials: false
 
-      - uses: actions/setup-node@v6
+      # ponytail: upstream (feature/cheap) switched package.json/Makefile to the
+      # `vp` tool, which needs this setup action instead of plain setup-node.
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: "24"
-          cache: "npm"
+          node-version: "26"
+          cache: true
 
       - name: Install
         run: make install-ui
+
+      - name: OpenAPI
+        run: if grep -q '^openapi' Makefile; then make openapi; fi
 
       - name: Lint
         run: make lint-ui
