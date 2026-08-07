@@ -87,7 +87,7 @@ jobs:
         id: cache-dist
         with:
           path: dist
-          key: ${{ runner.os }}-${{ github.sha }}-dist
+          key: ${{ runner.os }}-${{ github.run_id }}-dist
 
       - name: Login
         uses: docker/login-action@v3
@@ -187,7 +187,7 @@ jobs:
         id: cache-dist
         with:
           path: dist
-          key: ${{ runner.os }}-${{ github.sha }}-dist
+          key: ${{ runner.os }}-${{ github.run_id }}-dist
 
       - name: Create nightly build
         uses: goreleaser/goreleaser-action@v7

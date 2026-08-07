@@ -204,13 +204,17 @@ jobs:
         run: make ui
 
       - name: Cache dist
-        # avoid cache thrashing by nightly
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        # ponytail: previously push/pull_request-only to avoid nightly thrashing,
+        # but nightly now builds feature/cheap which push/PR never touches, so
+        # nightly must populate its own cache -- save unconditionally.
+        # Keyed by run_id (not github.sha): nightly's ref input (feature/cheap)
+        # can carry new commits while github.sha (master, the trigger) stays
+        # unchanged, so a sha-keyed cache would go stale and never update.
         uses: actions/cache/save@v5
         id: cache-dist
         with:
           path: dist
-          key: ${{ runner.os }}-${{ github.sha }}-dist
+          key: ${{ runner.os }}-${{ github.run_id }}-dist
 
       - name: Porcelain
         run: |
