@@ -19,7 +19,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/cognitoidentity v1.36.4
 	github.com/basgys/goxml2json v1.1.0
 	github.com/benbjohnson/clock v1.3.5
-	github.com/bogosj/tesla v1.3.2-0.20250818120641-a31b7b6396c9
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cli/browser v1.3.0
 	github.com/cloudfoundry/jibber_jabber v0.0.0-20151120183258-bcc4c8345a21
@@ -258,7 +257,6 @@ require (
 tool (
 	github.com/dmarkham/enumer
 	github.com/evcc-io/evcc/cmd/implement
-	github.com/evcc-io/openapi-mcp/cmd/openapi-mcp
 	github.com/gokrazy/tools/cmd/gok
 	go.uber.org/mock/mockgen
 	golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize
