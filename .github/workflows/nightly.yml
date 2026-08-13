@@ -116,6 +116,16 @@ jobs:
       - name: Patch ASN1
         run: make patch-asn1-sudo
 
+      # ponytail: previous run's "nightly" tag is fetched by checkout (fetch-depth:0) and
+      # confuses goreleaser's version detection (non-semver "current tag") if not removed
+      # before the build - must run before goreleaser, not after.
+      - name: Remove stale nightly tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete nightly --yes --cleanup-tag || true
+          git tag -d nightly 2>/dev/null || true
+
       - name: Get dist from cache
         uses: actions/cache/restore@v6
         id: cache-dist
