@@ -34,9 +34,9 @@ jobs:
     needs: check_date
     if: |
       ${{ needs.check_date.outputs.should_run != 'false' }}
-      && startsWith(github.ref, 'refs/heads/feature/cheap2')
+      && startsWith(github.ref, 'refs/heads/feature/cheap')
       && ! contains(github.head_ref, 'refs/heads/chore/')
-    uses: vondraussen/evcc/.github/workflows/default.yml@feature/cheap2
+    uses: vondraussen/evcc/.github/workflows/default.yml@feature/cheap
     permissions:
       contents: read
       actions: write
