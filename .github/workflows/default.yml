@@ -6,11 +6,16 @@ on:
       - master
   pull_request:
   workflow_call:
+    inputs:
+      ref:
+        description: "Branch/ref to build (defaults to the triggering ref)"
+        required: false
+        type: string
 
 jobs:
   clean:
     name: Clean
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -18,6 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - uses: actions/setup-go@v6
@@ -50,7 +56,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -58,6 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - uses: actions/setup-go@v6
@@ -88,7 +95,7 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -96,6 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - uses: actions/setup-go@v6
@@ -119,7 +127,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     permissions:
       contents: read
@@ -127,6 +135,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - uses: actions/setup-go@v6
@@ -161,20 +170,26 @@ jobs:
     permissions:
       contents: read
       actions: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
-      - uses: actions/setup-node@v6
+      # ponytail: upstream (feature/cheap) switched package.json/Makefile to the
+      # `vp` tool, which needs this setup action instead of plain setup-node.
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: "24"
-          cache: "npm"
+          node-version: "26"
+          cache: true
 
       - name: Install
         run: make install-ui
+
+      - name: OpenAPI
+        run: if grep -q '^openapi' Makefile; then make openapi; fi
 
       - name: Lint
         run: make lint-ui
@@ -189,13 +204,17 @@ jobs:
         run: make ui
 
       - name: Cache dist
-        # avoid cache thrashing by nightly
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        # ponytail: previously push/pull_request-only to avoid nightly thrashing,
+        # but nightly now builds feature/cheap which push/PR never touches, so
+        # nightly must populate its own cache -- save unconditionally.
+        # Keyed by run_id (not github.sha): nightly's ref input (feature/cheap)
+        # can carry new commits while github.sha (master, the trigger) stays
+        # unchanged, so a sha-keyed cache would go stale and never update.
         uses: actions/cache/save@v5
         id: cache-dist
         with:
           path: dist
-          key: ${{ runner.os }}-${{ github.sha }}-dist
+          key: ${{ runner.os }}-${{ github.run_id }}-dist
 
       - name: Porcelain
         run: |
