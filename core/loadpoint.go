@@ -1061,15 +1061,20 @@ func (lp *Loadpoint) charging() bool {
 func (lp *Loadpoint) PvChargeStarting() bool {
 	lp.RLock()
 	enabled := lp.enabled
-	pvTimerRunning := !lp.pvTimer.IsZero()
+	pvTimer := lp.pvTimer
 	lp.RUnlock()
 
 	if lp.GetMode() != api.ModePV || !lp.connected() || lp.chargeGoalReached(enabled) {
 		return false
 	}
 
-	// enable timer running (not yet enabled)
-	return !enabled && pvTimerRunning
+	if enabled || pvTimer.IsZero() {
+		return false
+	}
+
+	// a timer restarting on every surplus dip never starts the loadpoint, hence
+	// only claim surplus once it has survived half of the enable delay (#32778)
+	return lp.clock.Since(pvTimer) >= lp.GetEnableDelay()/2
 }
 
 // chargeGoalReached reports whether the loadpoint will not draw more: enabled
@@ -1588,6 +1593,16 @@ func (lp *Loadpoint) boostPower(batteryPower float64) float64 {
 		// in a too low current when there is a bit remaining grid consumption due to the accuracy
 		// of the battery controller
 		delta += lp.EffectiveStepPower()
+	}
+
+	// bridge the power gap between 1p max and 3p min so pvScalePhases can trigger a scale-up
+	if lp.hasPhaseSwitching() && lp.phaseSwitchCompleted() && lp.site.GetBatteryMaxDischargePower() != nil {
+		if activePhases, maxPhases := lp.ActivePhases(), lp.MaxActivePhases(); activePhases < maxPhases &&
+			lp.circuitAllowsPhases(maxPhases, lp.effectiveMinCurrent()) {
+			// max power actually achievable on the active phases
+			activeMaxPower := min(lp.EffectiveMaxPower(), Voltage*lp.effectiveMaxCurrent()*float64(activePhases))
+			delta += max(0, lp.EffectiveMinPower()*float64(maxPhases)-activeMaxPower)
+		}
 	}
 
 	// start boosting by setting maximum power
