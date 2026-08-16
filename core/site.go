@@ -1021,11 +1021,7 @@ func optimizerEnabled() bool {
 //   - the adjustment applied to sitePower for battery priority below prioritySoc;
 //     adding it back restores the unadjusted site power for a loadpoint that
 //     takes priority over the battery (battery boost)
-func (site *Site) sitePower(totalChargePower, flexiblePower float64) (float64, bool, bool, float64, error) {
-	if err := site.updateMeters(); err != nil {
-		return 0, false, false, 0, err
-	}
-
+func (site *Site) sitePower(totalChargePower, flexiblePower float64) (float64, bool, bool, float64) {
 	// allow using PV as estimate for grid power
 	if site.gridMeter == nil {
 		site.gridPower = totalChargePower - site.pvPower
@@ -1086,7 +1082,7 @@ func (site *Site) sitePower(totalChargePower, flexiblePower float64) (float64, b
 
 	site.log.DEBUG.Printf("site power: %.0fW"+flexStr, sitePower)
 
-	return sitePower, batteryBuffered, batteryStart, priorityAdjustment, nil
+	return sitePower, batteryBuffered, batteryStart, priorityAdjustment
 }
 
 // updateLoadpoints updates all loadpoints' charge power
@@ -1154,8 +1150,15 @@ func (site *Site) update(lp updater) {
 		site.log.WARN.Println("feed-in:", err)
 	}
 
-	// update loadpoints
-	totalChargePower := site.updateLoadpoints(consumption)
+	// update loadpoints (charger/charge-meter I/O) and site meters (PV/battery/grid) concurrently:
+	// a loadpoint's charger blocking on an unreachable device (e.g. an offline go-e charger)
+	// must not delay the site's own meter reads
+	var totalChargePower float64
+	var meterErr error
+	var wg sync.WaitGroup
+	wg.Go(func() { totalChargePower = site.updateLoadpoints(consumption) })
+	wg.Go(func() { meterErr = site.updateMeters() })
+	wg.Wait()
 
 	// update all circuits' power and currents
 	if site.circuit != nil {
@@ -1194,7 +1197,9 @@ func (site *Site) update(lp updater) {
 		flexiblePower = site.prioritizer.GetChargePowerFlexibility(lp)
 	}
 
-	if sitePower, batteryBuffered, batteryStart, priorityAdjustment, err := site.sitePower(totalChargePower, flexiblePower); err == nil {
+	if meterErr == nil {
+		sitePower, batteryBuffered, batteryStart, priorityAdjustment := site.sitePower(totalChargePower, flexiblePower)
+
 		// ignore negative pvPower values as that means it is not an energy source but consumption
 		homePower := site.gridPower + max(0, site.pvPower) + site.battery.Power - totalChargePower
 		homePower = max(homePower, 0)
@@ -1236,7 +1241,7 @@ func (site *Site) update(lp updater) {
 			go telemetry.UpdateChargeProgress(site.log, totalChargePower, greenShareLoadpoints)
 		}
 	} else {
-		site.log.ERROR.Println(err)
+		site.log.ERROR.Println(meterErr)
 	}
 
 	// smart grid charging

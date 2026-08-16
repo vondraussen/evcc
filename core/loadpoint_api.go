@@ -260,6 +260,13 @@ func (lp *Loadpoint) GetPhasesConfigured() int {
 	return lp.phasesConfigured
 }
 
+// HasPhaseSwitching returns whether the charger currently supports phase switching
+func (lp *Loadpoint) HasPhaseSwitching() bool {
+	lp.RLock()
+	defer lp.RUnlock()
+	return lp.hasPhaseSwitching()
+}
+
 // SetPhasesConfigured sets the configured phases
 func (lp *Loadpoint) SetPhasesConfigured(phases int) error {
 	// limit auto mode (phases=0) to scalable charger

@@ -59,8 +59,8 @@ func TestSitePowerPriorityAdjustment(t *testing.T) {
 			}
 			site.excessDCPower = tc.excessDC
 
-			sitePower, _, _, adjustment, err := site.sitePower(0, 0)
-			assert.NoError(t, err)
+			assert.NoError(t, site.updateMeters())
+			sitePower, _, _, adjustment := site.sitePower(0, 0)
 			assert.Equal(t, tc.expSitePower, sitePower, "sitePower")
 			assert.Equal(t, tc.expAdjustment, adjustment, "priority adjustment")
 			assert.Equal(t, tc.expReconstructed, sitePower+adjustment, "reconstructed (unadjusted) site power")

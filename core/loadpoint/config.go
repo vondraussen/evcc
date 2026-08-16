@@ -87,7 +87,10 @@ func (payload DynamicConfig) Apply(lp API) error {
 		lp.SetDefaultMode(mode)
 	}
 
-	if err == nil {
+	// skip restoring auto phase switching (0) if the charger's capability is currently
+	// unknown, e.g. because it is offline at startup; avoids failing config restore for
+	// chargers (like go-e) that only detect phase switching support once connected
+	if err == nil && (payload.PhasesConfigured != 0 || lp.HasPhaseSwitching()) {
 		err = lp.SetPhasesConfigured(payload.PhasesConfigured)
 	}
 
