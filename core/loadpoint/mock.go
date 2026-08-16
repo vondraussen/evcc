@@ -741,6 +741,20 @@ func (mr *MockAPIMockRecorder) HasChargeMeter() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasChargeMeter", reflect.TypeOf((*MockAPI)(nil).HasChargeMeter))
 }
 
+// HasPhaseSwitching mocks base method.
+func (m *MockAPI) HasPhaseSwitching() bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HasPhaseSwitching")
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// HasPhaseSwitching indicates an expected call of HasPhaseSwitching.
+func (mr *MockAPIMockRecorder) HasPhaseSwitching() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasPhaseSwitching", reflect.TypeOf((*MockAPI)(nil).HasPhaseSwitching))
+}
+
 // IsFastChargingActive mocks base method.
 func (m *MockAPI) IsFastChargingActive() bool {
 	m.ctrl.T.Helper()

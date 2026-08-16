@@ -80,6 +80,8 @@ type API interface {
 	GetPhasesConfigured() int
 	// SetPhasesConfigured sets the configured phases
 	SetPhasesConfigured(int) error
+	// HasPhaseSwitching returns whether the charger currently supports phase switching
+	HasPhaseSwitching() bool
 	// ActivePhases returns the active phases for the current vehicle
 	ActivePhases() int
 
