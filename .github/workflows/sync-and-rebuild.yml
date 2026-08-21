@@ -96,9 +96,12 @@ jobs:
 
       - name: Tag new upstream release for cheap build
         run: |
-          # find the newest evcc-io release tag (excludes the rolling "nightly" tag)
+          # newest evcc-io *feature* release tag reachable from upstream/master.
+          # Bugfix releases (e.g. 0.314.1) are cut from a release/X.Y.Z branch,
+          # not master, and never reach feature/cheap - --merged filters those
+          # out so we don't get stuck waiting for a tag that can never sync.
           git fetch upstream --tags
-          latest=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          latest=$(git tag -l --merged upstream/master | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
           if [ -z "$latest" ]; then
             echo "No upstream release tag found"
           elif git rev-parse -q --verify "refs/tags/${latest}-chp" >/dev/null; then
