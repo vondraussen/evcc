@@ -94,6 +94,25 @@ jobs:
         run: |
           git push origin feature/cheap
 
+      - name: Tag new upstream release for cheap build
+        run: |
+          # find the newest evcc-io release tag (excludes the rolling "nightly" tag)
+          git fetch upstream --tags
+          latest=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          if [ -z "$latest" ]; then
+            echo "No upstream release tag found"
+          elif git rev-parse -q --verify "refs/tags/${latest}-chp" >/dev/null; then
+            echo "${latest}-chp already exists, nothing to do"
+          elif ! git merge-base --is-ancestor "$latest" HEAD; then
+            echo "Upstream tag $latest not yet merged into feature/cheap, skipping"
+          else
+            # tagging HEAD triggers cheap-release.yml, which builds/publishes
+            # the .deb and Docker image with this exact version string
+            git tag "${latest}-chp" HEAD
+            git push origin "${latest}-chp"
+            echo "Tagged and pushed ${latest}-chp"
+          fi
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 

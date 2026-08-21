@@ -1,0 +1,55 @@
+name: Cheap Release
+
+# fired by sync-and-rebuild.yml's "Tag new upstream release for cheap build"
+# step whenever a new evcc-io release tag has been merged into feature/cheap.
+
+on:
+  push:
+    tags: ["*-chp"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # full history + tags: `make build`'s `git describe` (run inside the
+          # Dockerfile) needs to see the pushed tag to embed it as the version
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ponytail: Docker image only, no .deb - nightly.yml already covers that
+      # path from a daily snapshot. Add a goreleaser (-f .goreleaser-nightly.yml,
+      # no --snapshot) + `gh release create` step here, mirroring nightly.yml's
+      # apt job, if a tagged .deb is needed too.
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            RELEASE=1
+          tags: |
+            ghcr.io/vondraussen/evcc:${{ github.ref_name }}
+            ghcr.io/vondraussen/evcc:latest
+          cache-from: type=registry,ref=ghcr.io/vondraussen/evcc:nightly
+          cache-to: type=inline
