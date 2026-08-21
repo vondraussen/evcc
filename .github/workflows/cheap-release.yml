@@ -12,8 +12,19 @@ permissions:
   packages: write
 
 jobs:
+  # runs default.yml's clean/build/test/lint/ui jobs against the tagged commit,
+  # same as nightly.yml/release.yml - the "ui" job is what populates the dist
+  # cache the apt job below restores.
+  call-build-workflow:
+    name: Build
+    uses: vondraussen/evcc/.github/workflows/default.yml@feature/cheap
+    permissions:
+      contents: read
+      actions: write
+
   docker:
     name: Build and push Docker image
+    needs: call-build-workflow
     runs-on: ubuntu-latest
 
     steps:
@@ -36,10 +47,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # ponytail: Docker image only, no .deb - nightly.yml already covers that
-      # path from a daily snapshot. Add a goreleaser (-f .goreleaser-nightly.yml,
-      # no --snapshot) + `gh release create` step here, mirroring nightly.yml's
-      # apt job, if a tagged .deb is needed too.
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -53,3 +60,54 @@ jobs:
             ghcr.io/vondraussen/evcc:latest
           cache-from: type=registry,ref=ghcr.io/vondraussen/evcc:nightly
           cache-to: type=inline
+
+  apt:
+    name: Publish .deb as GitHub release
+    needs: call-build-workflow
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+        id: go
+
+      - name: Patch ASN1
+        run: make patch-asn1-sudo
+
+      - name: Get dist from cache
+        uses: actions/cache/restore@v6
+        id: cache-dist
+        with:
+          path: dist
+          key: ${{ runner.os }}-${{ github.run_id }}-dist
+
+      # no --snapshot: HEAD is the pushed tag itself, so .Version resolves to
+      # the tag name directly (e.g. "0.313.0-chp") - release.disable: true in
+      # .goreleaser-nightly.yml means this only builds/packages into ./release,
+      # it doesn't try to create the GitHub release itself (done below instead,
+      # same as nightly.yml).
+      - name: Build .deb
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7
+        with:
+          version: '~> v2'
+          args: -f .goreleaser-nightly.yml --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish .deb as GitHub release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" release/*.deb \
+            --title "evcc ${{ github.ref_name }}" \
+            --notes "Cheap build of evcc ${{ github.ref_name }}, based on evcc-io/evcc ${GITHUB_REF_NAME%-chp}."
