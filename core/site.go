@@ -1220,17 +1220,18 @@ func (site *Site) update(lp updater) {
 	// a loadpoint's charger blocking on an unreachable device (e.g. an offline go-e charger)
 	// must not delay the site's own meter reads
 	var totalChargePower float64
+	var state siteState
 	var meterErr error
 	var wg sync.WaitGroup
 	wg.Go(func() { totalChargePower = site.updateLoadpoints(consumption) })
-	wg.Go(func() { meterErr = site.updateMeters() })
+	wg.Go(func() { state, meterErr = site.updateMeters() })
 	wg.Wait()
 
 	site.updateCircuits()
 	site.applyHemsLimits()
 
-	if state, err := site.updateMeters(); err != nil {
-		site.log.ERROR.Println(err)
+	if meterErr != nil {
+		site.log.ERROR.Println(meterErr)
 	} else {
 		go site.optimizerUpdateAsync(tariff.SlotDuration)
 
