@@ -189,14 +189,16 @@ jobs:
           path: dist
           key: ${{ runner.os }}-${{ github.run_id }}-dist
 
-      # ponytail: our own "*-chp" tags (see cheap-release.yml) can end up as the
-      # nearest reachable tag on feature/cheap, and goreleaser's auto-detected
-      # "previous tag" then feeds its snapshot-version math (incminor etc.),
-      # which can't parse a "-chp" suffix. Pin it to the latest clean upstream
-      # release tag instead so nightly snapshots keep working regardless.
-      - name: Find latest clean upstream tag
-        id: prev_tag
-        run: echo "tag=$(git tag -l --merged HEAD | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)" >> "$GITHUB_OUTPUT"
+      # ponytail: goreleaser derives the snapshot version from the nearest
+      # reachable git tag, and which tag counts as "nearest" depends on graph
+      # topology, not chronology -- some days that's a real release/"-chp" tag
+      # (fine, semver-parseable), other days it's the floating "nightly" tag
+      # itself (not semver, breaks the incminor template in .goreleaser-nightly.yml
+      # with "invalid semantic version"). Drop the local "nightly" tag ref before
+      # running goreleaser so it's never a candidate -- the release step below
+      # recreates "nightly" on GitHub via --target sha regardless of any local tag.
+      - name: Exclude floating nightly tag from version detection
+        run: git tag -d nightly || true
 
       - name: Create nightly build
         uses: goreleaser/goreleaser-action@v7
@@ -205,7 +207,6 @@ jobs:
           args: --snapshot -f .goreleaser-nightly.yml --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_PREVIOUS_TAG: ${{ steps.prev_tag.outputs.tag }}
 
       # ponytail: rolling "nightly" release, old tag+assets are dropped and recreated daily
       - name: Publish .deb as GitHub release asset
