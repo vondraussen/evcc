@@ -142,10 +142,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ponytail: this fork has no Cloudsmith secrets, so publish as a rolling
-      # "nightly" GitHub release instead. Stale tag is already cleared above,
-      # before the build, so no delete needed here.
-      - name: Publish .deb as GitHub release asset
+      - uses: actions/setup-python@v7
+        with:
+          python-version: 3.12
+
+      - name: Install Cloudsmith CLI
+        run: pip install cloudsmith-cli==1.16.0
+
+      - name: Publish .deb to Cloudsmith
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
