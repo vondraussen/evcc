@@ -1449,7 +1449,7 @@ func (site *Site) updatePower(lp updater, state siteState, totalChargePower floa
 	site.publishTariffs(greenShareHome, greenShareLoadpoints)
 
 	if telemetry.Enabled() && totalChargePower > standbyPower {
-		go telemetry.UpdateChargeProgress(site.log, totalChargePower, greenShareLoadpoints)
+		go telemetry.UpdateChargeProgress(site.log, totalChargePower, greenShareLoadpoints, len(site.activeLoadpoints()))
 	}
 }
 
