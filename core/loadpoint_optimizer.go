@@ -81,6 +81,24 @@ func (lp *Loadpoint) optimizerControlled() bool {
 	return v != nil && v.Capacity() > 0
 }
 
+// fixedDemandModelled indicates that optimizerRequest contains the charging as fixed vehicle
+// demand (mode now, smart cost limit) even if the optimizer does not control the loadpoint.
+// Plan and min soc charging follow evcc's own timing, which the request does not model.
+func (lp *Loadpoint) fixedDemandModelled() bool {
+	if lp.chargerHasFeature(api.Heating) || lp.chargerHasFeature(api.IntegratedDevice) || lp.EffectiveMaxPower() <= 0 {
+		return false
+	}
+
+	if v := lp.GetVehicle(); v == nil || (v.Capacity() == 0 && lp.GetLimitEnergy() == 0) {
+		return false
+	}
+
+	lp.RLock()
+	defer lp.RUnlock()
+
+	return !lp.planActive && !lp.minSocNotReached()
+}
+
 // activeSuggestion returns the optimizer's start/stop decision for the current slot,
 // nil if the optimizer does not control this loadpoint
 func (lp *Loadpoint) activeSuggestion() *types.Suggestion {
@@ -107,12 +125,15 @@ func (lp *Loadpoint) planDeadlineCritical() bool {
 		return false
 	}
 
-	goal, _ := lp.GetPlanGoal()
+	goal, isSocBased := lp.GetPlanGoal()
 	if goal <= 0 {
 		return false
 	}
 
 	required := lp.GetPlanRequiredDuration(goal, lp.EffectiveMaxPower())
+	if required <= 0 && lp.fullSocPlanContinues(goal, isSocBased) {
+		return true
+	}
 
 	// past the plan time the goal was missed- keep charging like plannerActive does
 	critical := required > 0
@@ -135,7 +156,7 @@ func (lp *Loadpoint) planDeadlineCritical() bool {
 // charge the home battery covers: the pv loop sees its discharge as deficit.
 func (lp *Loadpoint) surplusRegime(s *types.Suggestion) bool {
 	full := s.Charge >= lp.EffectiveMaxPower()-suggestionThreshold
-	return s.Action == actionCharge && !full && math.Abs(s.Grid) <= suggestionThreshold && s.Battery <= suggestionThreshold
+	return s.Action == actionCharge && !full && math.Abs(s.Grid) <= suggestionThreshold && s.BatteryDischarge <= suggestionThreshold
 }
 
 // optimizerCharging applies the optimizer's charging decision. It returns false
