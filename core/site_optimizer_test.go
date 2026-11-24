@@ -256,6 +256,25 @@ func TestApplyPlanGoalSoc(t *testing.T) {
 	assert.Equal(t, float32(40000), bat.SMax, "later goals must not raise s_max")
 }
 
+// TestPlanGoalsInHorizon guards that the displayed goals keep their SoC above the limit
+func TestPlanGoalsInHorizon(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	now := time.Now()
+	inside := []loadpoint.PlanGoal{
+		{Time: now.Add(2 * time.Hour), Soc: 75},
+		{Time: now.Add(5 * time.Hour), Soc: 90},
+	}
+
+	lp := loadpoint.NewMockAPI(ctrl)
+	lp.EXPECT().GetSocPlanGoals().Return(append(inside,
+		loadpoint.PlanGoal{Time: now.Add(100 * time.Hour), Soc: 90}, // beyond horizon
+		loadpoint.PlanGoal{Time: now.Add(-time.Hour), Soc: 90},      // past
+	))
+
+	assert.Equal(t, inside, planGoalsInHorizon(lp, 32))
+}
+
 // TestApplyPlanGoalBeyondHorizon guards that a plan beyond the horizon asks for the energy that
 // full power, after charging losses, cannot store between the horizon end and the plan time
 func TestApplyPlanGoalBeyondHorizon(t *testing.T) {
@@ -806,11 +825,13 @@ func TestLoadpointRequestChargeGoal(t *testing.T) {
 			lp.EXPECT().EffectivePlanStrategy().Return(api.PlanStrategy{}).AnyTimes()
 			lp.EXPECT().EffectivePlanTime().Return(time.Time{}).AnyTimes()
 			lp.EXPECT().GetPlanGoal().Return(0.0, false).AnyTimes()
+			lp.EXPECT().GetSocPlanGoals().Return(nil).AnyTimes()
 
-			req, _ := site.loadpointRequest(lp, 8, 15*time.Minute, nil)
+			req, detail := site.loadpointRequest(lp, 8, 15*time.Minute, nil)
 
 			assert.Equal(t, tc.wantInitial, req.SInitial)
 			assert.Equal(t, tc.wantSMax, req.SMax)
+			assert.Equal(t, tc.capacity == 0 || tc.soc == 0, detail.SocUnknown, "soc unknown")
 		})
 	}
 }
